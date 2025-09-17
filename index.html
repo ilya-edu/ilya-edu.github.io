@@ -3,690 +3,269 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Промышленная автоматизация и обработка данных</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Мониторинг оборудования</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/luxon@3.0.1"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-luxon@1.2.0"></script>
     <style>
-        :root {
-            --primary: #2c3e50;
-            --secondary: #3498db;
-            --accent: #e74c3c;
-            --light: #ecf0f1;
-            --dark: #2c3e50;
-            --success: #2ecc71;
-        }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        
         body {
-            background-color: #f5f7fa;
-            color: #333;
-            line-height: 1.6;
+            font-family: Arial, sans-serif;
+            margin: 20px;
         }
-        
         .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-        
-        header {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            color: white;
-            padding: 2rem 0;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .header-content {
-            position: relative;
-            z-index: 1;
-        }
-        
-        .header-bg {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0.1;
-            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100"><circle cx="50" cy="50" r="40" stroke="white" stroke-width="2" fill="none" /><rect x="30" y="30" width="40" height="40" stroke="white" stroke-width="2" fill="none" /></svg>');
-        }
-        
-        h1 {
-            font-size: 2.5rem;
-            margin-bottom: 0.5rem;
-        }
-        
-        .tagline {
-            font-size: 1.2rem;
-            margin-bottom: 1rem;
-            color: var(--light);
-        }
-        
-        .contact-info {
             display: flex;
-            justify-content: center;
             flex-wrap: wrap;
-            gap: 1rem;
-            margin-top: 1rem;
+            gap: 20px;
         }
-        
-        .contact-item {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
+        .chart-container {
+            width: 45%;
+            min-width: 300px;
+            margin-bottom: 20px;
         }
-        
-        section {
-            padding: 3rem 0;
-        }
-        
-        section:nth-child(even) {
-            background-color: white;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-        }
-        
-        h2 {
-            text-align: center;
-            margin-bottom: 2rem;
-            color: var(--primary);
-            position: relative;
-        }
-        
-        h2:after {
-            content: '';
-            display: block;
-            width: 80px;
-            height: 4px;
-            background: var(--secondary);
-            margin: 0.5rem auto;
-            border-radius: 2px;
-        }
-        
-        .skills-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 1.5rem;
-        }
-        
-        .skill-card {
-            background: white;
-            border-radius: 8px;
-            padding: 1.5rem;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        
-        .skill-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-        }
-        
-        .skill-card h3 {
-            color: var(--secondary);
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .progress-bar {
-            height: 8px;
-            background-color: #eee;
-            border-radius: 4px;
-            overflow: hidden;
-            margin: 1rem 0;
-        }
-        
-        .progress {
-            height: 100%;
-            background: linear-gradient(90deg, var(--secondary) 0%, var(--primary) 100%);
-            border-radius: 4px;
-        }
-        
-        .timeline {
-            position: relative;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        
-        .timeline:before {
-            content: '';
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 4px;
-            height: 100%;
-            background-color: var(--secondary);
-        }
-        
-        .timeline-item {
-            display: flex;
-            margin-bottom: 2rem;
-            position: relative;
-        }
-        
-        .timeline-content {
-            background: white;
-            border-radius: 8px;
-            padding: 1.5rem;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            width: calc(50% - 40px);
-        }
-        
-        .timeline-item:nth-child(odd) .timeline-content {
-            margin-right: auto;
-        }
-        
-        .timeline-item:nth-child(even) .timeline-content {
-            margin-left: auto;
-        }
-        
-        .timeline-icon {
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 40px;
-            height: 40px;
-            background-color: var(--secondary);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1.2rem;
-            box-shadow: 0 0 0 4px white, 0 0 0 8px var(--secondary);
-        }
-        
-        .projects {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 2rem;
-        }
-        
-        .project-card {
-            background: white;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            transition: transform 0.3s ease;
-        }
-        
-        .project-card:hover {
-            transform: translateY(-5px);
-        }
-        
-        .project-img {
-            height: 200px;
-            background: linear-gradient(45deg, var(--primary) 0%, var(--secondary) 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 3rem;
-        }
-        
-        .project-content {
-            padding: 1.5rem;
-        }
-        
-        .project-content h3 {
-            color: var(--primary);
-            margin-bottom: 0.5rem;
-        }
-        
-        .btn {
-            display: inline-block;
-            padding: 0.8rem 1.5rem;
-            background-color: var(--secondary);
+        button {
+            padding: 10px 15px;
+            background: #4CAF50;
             color: white;
             border: none;
             border-radius: 4px;
             cursor: pointer;
-            text-decoration: none;
-            transition: background-color 0.3s ease;
-            font-weight: 500;
+            font-size: 16px;
         }
-        
-        .btn:hover {
-            background-color: var(--primary);
+        button:hover {
+            background: #45a049;
         }
-        
-        .btn-outline {
-            background-color: transparent;
-            border: 2px solid var(--secondary);
-            color: var(--secondary);
-        }
-        
-        .btn-outline:hover {
-            background-color: var(--secondary);
-            color: white;
-        }
-        
-        .buttons-container {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            margin-top: 2rem;
-            flex-wrap: wrap;
-        }
-        
-        .counter {
-            display: flex;
-            justify-content: space-around;
-            flex-wrap: wrap;
-            margin: 2rem 0;
-        }
-        
-        .counter-item {
-            text-align: center;
-            padding: 1rem;
-        }
-        
-        .counter-number {
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: var(--secondary);
-            margin-bottom: 0.5rem;
-        }
-        
-        .counter-text {
-            color: var(--dark);
-            font-weight: 500;
-        }
-        
-        .interactive-demo {
-            background: white;
-            border-radius: 8px;
-            padding: 2rem;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        
-        .demo-controls {
-            display: flex;
-            gap: 1rem;
-            margin: 1rem 0;
-            flex-wrap: wrap;
-        }
-        
-        .demo-visualization {
-            height: 200px;
-            background-color: #f8f9fa;
-            border-radius: 8px;
-            margin: 1rem 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .process-animation {
+        #programName {
             width: 100%;
-            height: 100%;
-            position: relative;
-        }
-        
-        .animation-element {
-            position: absolute;
-            transition: all 0.5s ease;
-        }
-        
-        footer {
-            background-color: var(--primary);
-            color: white;
-            text-align: center;
-            padding: 2rem 0;
-        }
-        
-        .social-links {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            margin: 1rem 0;
-        }
-        
-        .social-links a {
-            color: white;
-            font-size: 1.5rem;
-            transition: color 0.3s ease;
-        }
-        
-        .social-links a:hover {
-            color: var(--secondary);
-        }
-        
-        @media (max-width: 768px) {
-            .timeline:before {
-                left: 30px;
-            }
-            
-            .timeline-content {
-                width: calc(100% - 80px);
-                margin-left: 80px !important;
-            }
-            
-            .timeline-icon {
-                left: 30px;
-            }
-            
-            h1 {
-                font-size: 2rem;
-            }
+            padding: 10px;
+            margin: 10px 0;
+            font-size: 16px;
         }
     </style>
 </head>
 <body>
-    <header>
-        <div class="header-bg"></div>
-        <div class="container header-content">
-            <h1>Александр Петров</h1>
-            <p class="tagline">Специалист по промышленной автоматизации и обработке технологических данных</p>
-            <div class="contact-info">
-                <div class="contact-item">
-                    <i class="fas fa-envelope"></i>
-                    <span>automation.expert@example.com</span>
-                </div>
-                <div class="contact-item">
-                    <i class="fas fa-phone"></i>
-                    <span>+7 (999) 123-45-67</span>
-                </div>
-                <div class="contact-item">
-                    <i class="fas fa-map-marker-alt"></i>
-                    <span>Москва, Россия</span>
-                </div>
-            </div>
-        </div>
-    </header>
+    <h1>Мониторинг оборудования</h1>
+    <div>
+        <label for="programName">Название программы:</label>
+        <input type="text" id="programName" readonly>
+    </div>
+    <button id="refreshBtn">Обновить данные</button>
 
-    <section id="about">
-        <div class="container">
-            <h2>Обо мне</h2>
-            <div style="text-align: center; max-width: 800px; margin: 0 auto;">
-                <p>Я специализируюсь на проектировании, внедрении и обслуживании систем промышленной автоматизации с более чем 8-летним опытом работы. Моя экспертиза включает программирование ПЛК, SCADA/HMI системы, обработку технологических данных и интеграцию производственных линий.</p>
-                <p>Мой подход сочетает глубокие технические знания с пониманием бизнес-процессов, что позволяет создавать эффективные и надежные решения для автоматизации производства.</p>
-            </div>
-            
-            <div class="counter">
-                <div class="counter-item">
-                    <div class="counter-number" id="project-counter">50</div>
-                    <div class="counter-text">Завершенных проектов</div>
-                </div>
-                <div class="counter-item">
-                    <div class="counter-number" id="experience-counter">8</div>
-                    <div class="counter-text">Лет опыта</div>
-                </div>
-                <div class="counter-item">
-                    <div class="counter-number" id="client-counter">24</div>
-                    <div class="counter-text">Довольных клиентов</div>
-                </div>
-                <div class="counter-item">
-                    <div class="counter-number" id="system-counter">150</div>
-                    <div class="counter-text">Автоматизированных систем</div>
-                </div>
-            </div>
-            
-            <div class="buttons-container">
-                <button class="btn" onclick="showAlert('Свяжитесь со мной для обсуждения вашего проекта!')">
-                    <i class="fas fa-paper-plane"></i> Предложить проект
-                </button>
-                <button class="btn btn-outline" onclick="showAlert('Мое портфолио будет отправлено вам на email!')">
-                    <i class="fas fa-download"></i> Скачать портфолио
-                </button>
-            </div>
+    <div class="container">
+        <div class="chart-container">
+            <canvas id="coreTimeChart"></canvas>
         </div>
-    </section>
-
-    <section id="skills">
-        <div class="container">
-            <h2>Экспертиза</h2>
-            <div class="skills-grid">
-                <div class="skill-card">
-                    <h3><i class="fas fa-microchip"></i> Программирование ПЛК</h3>
-                    <p>Разработка и отладка программ для programmable logic controllers (Siemens, Allen-Bradley, Schneider Electric)</p>
-                    <div class="progress-bar">
-                        <div class="progress" style="width: 95%"></div>
-                    </div>
-                </div>
-                <div class="skill-card">
-                    <h3><i class="fas fa-desktop"></i> SCADA/HMI системы</h3>
-                    <p>Создание интерфейсов оператора и систем диспетчеризации (WinCC, FactoryTalk, Ignition)</p>
-                    <div class="progress-bar">
-                        <div class="progress" style="width: 90%"></div>
-                    </div>
-                </div>
-                <div class="skill-card">
-                    <h3><i class="fas fa-database"></i> Обработка данных</h3>
-                    <p>Анализ и визуализация технологических данных, создание систем сбора и архивирования</p>
-                    <div class="progress-bar">
-                        <div class="progress" style="width: 85%"></div>
-                    </div>
-                </div>
-                <div class="skill-card">
-                    <h3><i class="fas fa-project-diagram"></i> Интеграция систем</h3>
-                    <p>Объединение разнородных систем в единый производственный контур (OPC, MQTT, REST API)</p>
-                    <div class="progress-bar">
-                        <div class="progress" style="width: 88%"></div>
-                    </div>
-                </div>
-            </div>
+        <div class="chart-container">
+            <canvas id="channelStatusChart"></canvas>
         </div>
-    </section>
-
-    <section id="process">
-        <div class="container">
-            <h2>Мой процесс работы</h2>
-            <div class="timeline">
-                <div class="timeline-item">
-                    <div class="timeline-content">
-                        <h3>Анализ требований</h3>
-                        <p>Изучение технологического процесса, определение целей автоматизации, составление ТЗ</p>
-                    </div>
-                    <div class="timeline-icon">
-                        <i class="fas fa-search"></i>
-                    </div>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-content">
-                        <h3>Проектирование архитектуры</h3>
-                        <p>Разработка структуры системы, выбор оборудования, создание алгоритмов управления</p>
-                    </div>
-                    <div class="timeline-icon">
-                        <i class="fas fa-blueprint"></i>
-                    </div>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-content">
-                        <h3>Программирование</h3>
-                        <p>Написание кода для ПЛК, создание интерфейсов оператора, разработка баз данных</p>
-                    </div>
-                    <div class="timeline-icon">
-                        <i class="fas fa-code"></i>
-                    </div>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-content">
-                        <h3>Внедрение и пусконаладка</h3>
-                        <p>Монтаж оборудования, настройка системы, проведение испытаний, обучение персонала</p>
-                    </div>
-                    <div class="timeline-icon">
-                        <i class="fas fa-cogs"></i>
-                    </div>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-content">
-                        <h3>Поддержка и оптимизация</h3>
-                        <p>Мониторинг работы системы, устранение неисправностей, доработка и улучшение</p>
-                    </div>
-                    <div class="timeline-icon">
-                        <i class="fas fa-chart-line"></i>
-                    </div>
-                </div>
-            </div>
+        <div class="chart-container">
+            <canvas id="axisMovementChart"></canvas>
         </div>
-    </section>
-
-    <section id="projects">
-        <div class="container">
-            <h2>Ключевые проекты</h2>
-            <div class="projects">
-                <div class="project-card">
-                    <div class="project-img">
-                        <i class="fas fa-industry"></i>
-                    </div>
-                    <div class="project-content">
-                        <h3>Автоматизация нефтеперерабатывающего завода</h3>
-                        <p>Разработка распределенной системы управления технологическими процессами переработки нефти</p>
-                        <button class="btn btn-outline" onclick="showAlert('Детали проекта: система включает 15 ПЛК, 5 серверов и 25 рабочих мест операторов')">Детали проекта</button>
-                    </div>
-                </div>
-                <div class="project-card">
-                    <div class="project-img">
-                        <i class="fas fa-water"></i>
-                    </div>
-                    <div class="project-content">
-                        <h3>Система управления очистными сооружениями</h3>
-                        <p>Полный цикл автоматизации управления процессом очистки воды с удаленным мониторингом</p>
-                        <button class="btn btn-outline" onclick="showAlert('Детали проекта: интеграция 8 технологических зон, web-интерфейс для мониторинга')">Детали проекта</button>
-                    </div>
-                </div>
-                <div class="project-card">
-                    <div class="project-img">
-                        <i class="fas fa-boxes"></i>
-                    </div>
-                    <div class="project-content">
-                        <h3>Роботизированный складской комплекс</h3>
-                        <p>Проектирование системы управления складскими роботами и интеграция с WMS</p>
-                        <button class="btn btn-outline" onclick="showAlert('Детали проекта: система управляет 20 роботами-штабелерами и обрабатывает 5000 заказов в день')">Детали проекта</button>
-                    </div>
-                </div>
-            </div>
+        <div class="chart-container">
+            <canvas id="programProgressChart"></canvas>
         </div>
-    </section>
-
-    <section id="demo">
-        <div class="container">
-            <h2>Интерактивная демонстрация</h2>
-            <div class="interactive-demo">
-                <h3>Симулятор PID-регулятора</h3>
-                <p>Настройте параметры регулятора и наблюдайте за откликом системы:</p>
-                
-                <div class="demo-controls">
-                    <div>
-                        <label for="kp">Пропорциональный коэффициент (Kp):</label>
-                        <input type="range" id="kp" min="0.1" max="5" step="0.1" value="1" oninput="updatePID()">
-                        <span id="kp-value">1.0</span>
-                    </div>
-                    <div>
-                        <label for="ki">Интегральный коэффициент (Ki):</label>
-                        <input type="range" id="ki" min="0" max="2" step="0.1" value="0.5" oninput="updatePID()">
-                        <span id="ki-value">0.5</span>
-                    </div>
-                    <div>
-                        <label for="kd">Дифференциальный коэффициент (Kd):</label>
-                        <input type="range" id="kd" min="0" max="2" step="0.1" value="0.2" oninput="updatePID()">
-                        <span id="kd-value">0.2</span>
-                    </div>
-                </div>
-                
-                <div class="demo-visualization">
-                    <div class="process-animation" id="pid-animation">
-                        <div class="animation-element" style="width: 30px; height: 30px; background-color: #3498db; border-radius: 50%; left: 50%; top: 50%; transform: translate(-50%, -50%);" id="process-value"></div>
-                        <div class="animation-element" style="width: 80%; height: 2px; background-color: #e74c3c; bottom: 30%; left: 10%;" id="setpoint-line"></div>
-                    </div>
-                </div>
-                
-                <p id="pid-status">Система стабильна. Перерегулирование: <span id="overshoot">5%</span></p>
-            </div>
-        </div>
-    </section>
-
-    <footer>
-        <div class="container">
-            <h2>Свяжитесь со мной</h2>
-            <p>Готов обсудить ваш проект и предложить решения для автоматизации</p>
-            
-            <div class="social-links">
-                <a href="#"><i class="fab fa-linkedin"></i></a>
-                <a href="#"><i class="fab fa-telegram"></i></a>
-                <a href="#"><i class="fab fa-github"></i></a>
-                <a href="#"><i class="fas fa-envelope"></i></a>
-            </div>
-            
-            <p>© 2023 Александр Петров. Специалист по промышленной автоматизации</p>
-        </div>
-    </footer>
+    </div>
 
     <script>
-        // Анимация счетчиков
-        function animateCounter(elementId, target, duration) {
-            const element = document.getElementById(elementId);
-            const start = 0;
-            const increment = target / (duration / 16);
-            let current = start;
-            
-            const timer = setInterval(() => {
-                current += increment;
-                if (current >= target) {
-                    clearInterval(timer);
-                    current = target;
-                }
-                element.textContent = Math.round(current);
-            }, 16);
-        }
-        
-        // Показ уведомлений
-        function showAlert(message) {
-            alert(message);
-        }
-        
-        // Обновление PID-регулятора
-        function updatePID() {
-            const kp = parseFloat(document.getElementById('kp').value);
-            const ki = parseFloat(document.getElementById('ki').value);
-            const kd = parseFloat(document.getElementById('kd').value);
-            
-            document.getElementById('kp-value').textContent = kp.toFixed(1);
-            document.getElementById('ki-value').textContent = ki.toFixed(1);
-            document.getElementById('kd-value').textContent = kd.toFixed(1);
-            
-            // Простая имитация отклика системы
-            const stability = 1 / (kp + ki + kd);
-            const overshoot = (kp * 5 + ki * 3 + kd * 8);
-            
-            document.getElementById('overshoot').textContent = Math.min(50, Math.round(overshoot)) + '%';
-            
-            if (overshoot < 15) {
-                document.getElementById('pid-status').textContent = 'Система стабильна. Перерегулирование: ';
-            } else if (overshoot < 30) {
-                document.getElementById('pid-status').textContent = 'Система умеренно стабильна. Перерегулирование: ';
-            } else {
-                document.getElementById('pid-status').textContent = 'Система нестабильна. Перерегулирование: ';
-            }
-            
-            // Анимация отклика
-            const processValue = document.getElementById('process-value');
-            const oscillation = Math.sin(Date.now() / 1000) * stability * 20;
-            processValue.style.transform = `translate(-50%, ${-50 + oscillation}%)`;
-        }
-        
-        // Запуск анимации при загрузке страницы
-        window.onload = function() {
-            animateCounter('project-counter', 50, 2000);
-            animateCounter('experience-counter', 8, 2000);
-            animateCounter('client-counter', 24, 2000);
-            animateCounter('system-counter', 150, 2000);
-            
-            setInterval(updatePID, 100);
+        // Исходный JSON
+        const rawData = {
+            "data":[
+                ["Моточасы",[
+                    ["Время работы ядра (всего)","26:40:32"],
+                    ["Время работы ядра (текущее)","7:9:3"],
+                    ["Количество перезапусков ядра","86"],
+                    ["Количество каналов","2"]
+                ]],
+                ["Канал 1",[
+                    ["Время работы канала (текущее)","4:27:12"],
+                    ["Статус канала","Работа"],
+                    ["Режим канала","Авто"],
+                    ["Время работы программы","000:02:17"],
+                    ["Процент выполнения программы","86%"],
+                    ["Программа","/NC/examples/04_06.nc"]
+                ]],
+                ["Оси Канала 1",[
+                    ["Перемещение по оси X","42,8099 мм"],
+                    ["Перемещение по оси Y","-50,5937 мм"],
+                    ["Перемещение по оси Z","0 мм"],
+                    ["Перемещение по оси C","34,4552 мм"],
+                    ["Перемещение по оси S2","-5072,3452 мм"]
+                ]],
+                ["Оси Канала 2",[
+                    ["Перемещение по оси X","0 мм"],
+                    ["Перемещение по оси Y","0 мм"],
+                    ["Перемещение по оси Z","0 мм"],
+                    ["Перемещение по оси S","0 мм"],
+                    ["Перемещение по оси S2","0 мм"]
+                ]]
+            ]
         };
+
+        // Парсинг JSON
+        function parseData(data) {
+            const result = {};
+            data.data.forEach(item => {
+                const [title, values] = item;
+                result[title] = {};
+                values.forEach(([key, value]) => {
+                    result[title][key] = value;
+                });
+            });
+            return result;
+        }
+
+        // Обновление графиков
+        function updateCharts() {
+            const data = parseData(rawData);
+
+            // Название программы
+            document.getElementById('programName').value = data['Канал 1']['Программа'];
+
+            // 1. Моточасы (круговая диаграмма)
+            const coreTimeCtx = document.getElementById('coreTimeChart').getContext('2d');
+            const totalTime = data['Моточасы']['Время работы ядра (всего)'];
+            const currentTime = data['Моточасы']['Время работы ядра (текущее)'];
+            const restarts = data['Моточасы']['Количество перезапусков ядра'];
+
+            if (window.coreTimeChart) {
+                window.coreTimeChart.destroy();
+            }
+            window.coreTimeChart = new Chart(coreTimeCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Время работы (текущее)', 'Время работы (всего)', 'Перезапуски'],
+                    datasets: [{
+                        data: [
+                            timeToMinutes(currentTime),
+                            timeToMinutes(totalTime),
+                            parseInt(restarts)
+                        ],
+                        backgroundColor: [
+                            'rgba(54, 162, 235, 0.7)',
+                            'rgba(75, 192, 192, 0.7)',
+                            'rgba(255, 99, 132, 0.7)'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Моточасы и перезапуски'
+                        }
+                    }
+                }
+            });
+
+            // 2. Статус канала (столбчатая диаграмма)
+            const channelStatusCtx = document.getElementById('channelStatusChart').getContext('2d');
+            const channelStatus = data['Канал 1']['Статус канала'];
+            const channelMode = data['Канал 1']['Режим канала'];
+
+            if (window.channelStatusChart) {
+                window.channelStatusChart.destroy();
+            }
+            window.channelStatusChart = new Chart(channelStatusCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Статус', 'Режим'],
+                    datasets: [{
+                        label: 'Канал 1',
+                        data: [channelStatus === 'Работа' ? 1 : 0, channelMode === 'Авто' ? 1 : 0],
+                        backgroundColor: [
+                            'rgba(75, 192, 192, 0.7)',
+                            'rgba(255, 206, 86, 0.7)'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Статус и режим канала'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 1
+                        }
+                    }
+                }
+            });
+
+            // 3. Перемещение по осям (линейная диаграмма)
+            const axisMovementCtx = document.getElementById('axisMovementChart').getContext('2d');
+            const axes = Object.keys(data['Оси Канала 1']).filter(k => k.startsWith('Перемещение по оси'));
+            const values = axes.map(axis => parseFloat(data['Оси Канала 1'][axis]));
+
+            if (window.axisMovementChart) {
+                window.axisMovementChart.destroy();
+            }
+            window.axisMovementChart = new Chart(axisMovementCtx, {
+                type: 'line',
+                data: {
+                    labels: axes.map(axis => axis.replace('Перемещение по оси ', '')),
+                    datasets: [{
+                        label: 'Перемещение (мм)',
+                        data: values,
+                        borderColor: 'rgba(153, 102, 255, 1)',
+                        backgroundColor: 'rgba(153, 102, 255, 0.2)',
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Перемещение по осям (Канал 1)'
+                        }
+                    }
+                }
+            });
+
+            // 4. Прогресс программы (круговая диаграмма)
+            const programProgressCtx = document.getElementById('programProgressChart').getContext('2d');
+            const progress = parseInt(data['Канал 1']['Процент выполнения программы']);
+
+            if (window.programProgressChart) {
+                window.programProgressChart.destroy();
+            }
+            window.programProgressChart = new Chart(programProgressCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Выполнено', 'Осталось'],
+                    datasets: [{
+                        data: [progress, 100 - progress],
+                        backgroundColor: [
+                            'rgba(54, 162, 235, 0.7)',
+                            'rgba(200, 200, 200, 0.7)'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Прогресс выполнения программы'
+                        }
+                    }
+                }
+            });
+        }
+
+        // Вспомогательная функция: время в минуты
+        function timeToMinutes(timeStr) {
+            const parts = timeStr.split(':').map(Number);
+            return parts[0] * 60 + parts[1] + (parts[2] || 0) / 60;
+        }
+
+        // Инициализация
+        document.getElementById('refreshBtn').addEventListener('click', updateCharts);
+        updateCharts();
     </script>
 </body>
 </html>
